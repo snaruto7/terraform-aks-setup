@@ -23,6 +23,7 @@ pipeline {
         string( name: 'node_count', defaultValue: '3', description: 'Enter node count for AKS cluster')
         choice( name: 'vm_size', choices: [ 'Standard_DS1_v2','Standard_D2_v2', 'Standard_D2S_v2', 'Standard_B2s', 'Standard_B2ms'], description: 'Enter size for AKS nodes')
         string( name: 'environment', defaultValue: '', description: 'Add the type of environment')
+        choice( name: 'Create', choices: ['True','False', 'None'], 'Tf infa to be created or destroyed or none')
     }
     stages{
         stage('Git Checkout'){
@@ -74,9 +75,37 @@ pipeline {
                     sh ''' 
                         terraform fmt
                         terraform init
-                        terraform plan
-                        
                     '''
+                }
+            }
+        }
+        stage('Plan Infra'){
+            when {
+                expression { params.Create == 'None'}
+            }
+            steps {
+                dir('terraform'){
+                    sh 'terraform plan'
+                }
+            }
+        }
+        stage('Create Infra'){
+            when {
+                expression { params.Create == 'True'}
+            }
+            steps {
+                dir('terraform'){
+                    sh 'terraform apply -auto-approve'
+                }
+            }
+        }
+        stage('Destroy Infra'){
+            when {
+                expression { params.Create == 'False'}
+            }
+            steps {
+                dir('terraform'){
+                    sh 'terraform destroy -auto-approve'
                 }
             }
         }
