@@ -54,11 +54,9 @@ pipeline {
         stage('Make tf code pretty'){
             steps{
                 dir('terraform'){
-                    sh """
-                        terraform fmt
-                        terraform init
-                        terraform plan
-                    """
+                    sh 'terraform fmt'
+                    sh 'terraform init'
+                    sh 'terraform plan'
                 }
             }
         }
