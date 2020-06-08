@@ -11,6 +11,12 @@ def getBuildUser() {
 pipeline {
     agent any
 
+    environment {
+        AZURE_SUBSCRIPTION_ID = credentials("${subscription_id}")
+        AZURE_CLIENT_ID = credentials("${subscription_id}")
+        AZURE_CLIENT_SECRET = credentials("${subscription_id}")
+        AZURE_TENANT_ID = credentials("${subscription_id}")
+    }
     parameters{
         choice( name: 'subscription_id', choices: ['sukriti-subs', 'shivam-subs', 'Ashish-subs'], description: 'Select the subscription')
         string( name: 'rg_name', defaultValue: '', description: 'Enter resource group name')
