@@ -1,6 +1,5 @@
 #!groovy
 
-@Library('jenkins-shared-libarary')
 def COLOR_MAP = ['SUCCESS': '#008000', 'FAILURE': '#ff1744', 'UNSTABLE': '#ffc300', 'ABORTED': '#bebebe']
 def getBuildUser() {
     if(currentBuild.rawBuild.getCause(Cause.UserIdCause)!=null)
