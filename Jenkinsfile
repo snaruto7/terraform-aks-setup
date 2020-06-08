@@ -3,7 +3,7 @@
 def COLOR_MAP = ['SUCCESS': '#008000', 'FAILURE': '#ff1744', 'UNSTABLE': '#ffc300', 'ABORTED': '#bebebe']
 def getBuildUser() {
     if(currentBuild.rawBuild.getCause(Cause.UserIdCause)!=null)
-        return currentBuild.rawBuild.getCause(Cause.UserIdCause).getUserName()
+        return currentBuild.rawBuild.getCause(Cause.UserIdCause).getUserId()
     else
         return null
 }
@@ -11,6 +11,9 @@ def getBuildUser() {
 pipeline {
     agent any
 
+    environment{
+        BUILD_USER = ''
+    }
     parameters{
         choice( name: 'subscription_id', choices: ['sukriti-subs', 'shivam-subs', 'Ashish-subs'], description: 'Select the subscription')
         string( name: 'rg_name', defaultValue: '', description: 'Enter resource group name')
@@ -22,15 +25,6 @@ pipeline {
         string( name: 'environment', defaultValue: '', description: 'Add the type of environment')
     }
     stages{
-        stage('Bind subscription') {
-            steps{
-                script{
-                    withCredentials([azureServicePrincipal("${subscription_id}")]) {
-                        sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
-                    }
-                }
-            }
-        }
         stage('Git Checkout'){
             steps {
                 checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'github-creds', url: 'https://github.com/snaruto7/terraform-aks-setup.git']]])
@@ -65,6 +59,13 @@ pipeline {
     }
     post{
         always{
+            script {
+                BUILD_USER = getBuildUser()
+            }
+            slackSend channel: '#terraform', 
+            color: COLOR_MAP[currentBuild.currentResult],
+            message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} by ${BUILD_USER}\n More info at: ${env.BUILD_URL}" 
+            
             cleanWs()
         }
     }
