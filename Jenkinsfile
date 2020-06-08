@@ -11,12 +11,6 @@ def getBuildUser() {
 pipeline {
     agent any
 
-    environment {
-        AZURE_SUBSCRIPTION_ID = credentials("${subscription_id}")
-        AZURE_CLIENT_ID = credentials("${subscription_id}")
-        AZURE_CLIENT_SECRET = credentials("${subscription_id}")
-        AZURE_TENANT_ID = credentials("${subscription_id}")
-    }
     parameters{
         choice( name: 'subscription_id', choices: ['sukriti-subs', 'shivam-subs', 'Ashish-subs'], description: 'Select the subscription')
         string( name: 'rg_name', defaultValue: '', description: 'Enter resource group name')
@@ -44,25 +38,34 @@ pipeline {
         }
         stage('Update Variables in Tfvars file'){
             steps{
-                sh '''
-                    sed -ie "s|ENV|$environment|g" terraform/terraform.tfvars
-                    sed -ie "s|SUBS_ID|$AZURE_SUBSCRIPTION_ID|g" terraform/terraform.tfvars
-                    sed -ie "s|CLIENT_ID|$AZURE_CLIENT_ID|g" terraform/terraform.tfvars
-                    sed -ie "s|CLIENT_SECRET|$AZURE_CLIENT_SECRET|g" terraform/terraform.tfvars
-                    sed -ie "s|TENANT_ID|$AZURE_TENANT_ID|g" terraform/terraform.tfvars
-                    sed -ie "s|RG_NAME|$rg_name|g" terraform/terraform.tfvars
-                    sed -ie "s|LOCATION|$rg_location|g" terraform/terraform.tfvars
-                    sed -ie "s|CLUSTER_NAME|$cluster_name|g" terraform/terraform.tfvars
-                    sed -ie "s|DNS_PREFIX|$dns_prefix|g" terraform/terraform.tfvars
-                    sed -ie "s|NODE_COUNT|$node_count|g" terraform/terraform.tfvars
-                    sed -ie "s|VM_SIZE|$vm_size|g" terraform/terraform.tfvars
-                '''
+                script{
+                    withCredentials([azureServicePrincipal("${subscription_id}")]){
+                        sh '''
+                            sed -ie "s|ENV|$environment|g" terraform/terraform.tfvars
+                            sed -ie "s|SUBS_ID|$AZURE_SUBSCRIPTION_ID|g" terraform/terraform.tfvars
+                            sed -ie "s|CLIENT_ID|$AZURE_CLIENT_ID|g" terraform/terraform.tfvars
+                            sed -ie "s|CLIENT_SECRET|$AZURE_CLIENT_SECRET|g" terraform/terraform.tfvars
+                            sed -ie "s|TENANT_ID|$AZURE_TENANT_ID|g" terraform/terraform.tfvars
+                            sed -ie "s|RG_NAME|$rg_name|g" terraform/terraform.tfvars
+                            sed -ie "s|LOCATION|$rg_location|g" terraform/terraform.tfvars
+                            sed -ie "s|CLUSTER_NAME|$cluster_name|g" terraform/terraform.tfvars
+                            sed -ie "s|DNS_PREFIX|$dns_prefix|g" terraform/terraform.tfvars
+                            sed -ie "s|NODE_COUNT|$node_count|g" terraform/terraform.tfvars
+                            sed -ie "s|VM_SIZE|$vm_size|g" terraform/terraform.tfvars
+                        '''
+                    }
+                }
             }
         }
         stage('View the tfvars file'){
             steps{
                 sh 'cat terraform/terraform.tfvars'
             }
+        }
+    }
+    post{
+        always{
+            cleanWs()
         }
     }
 }
