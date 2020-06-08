@@ -9,7 +9,7 @@ def getBuildUser() {
 }
 
 pipeline {
-    agent any
+    agent { label 'master' }
 
     environment{
         BUILD_USER = ''
