@@ -9,7 +9,7 @@ def getBuildUser() {
 }
 
 pipeline {
-    agent { label 'master' }
+    agent { label 'master'}
 
     environment{
         BUILD_USER = ''
@@ -54,8 +54,11 @@ pipeline {
         stage('Make tf code pretty'){
             steps{
                 dir('terraform'){
-                    sh 'id'
-                    sh 'which terraform'
+                    sh ''' 
+                        terraform fmt
+                        terraform init
+                        terraform plan
+                    '''
                 }
             }
         }
