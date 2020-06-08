@@ -51,9 +51,15 @@ pipeline {
                 }
             }
         }
-        stage('View the tfvars file'){
+        stage('Make tf code pretty'){
             steps{
-                sh 'cat terraform/terraform.tfvars'
+                dir('terraform')
+                sh '''
+                    terraform fmt
+                    terraform init
+                    terraform plan
+                    
+                '''
             }
         }
     }
