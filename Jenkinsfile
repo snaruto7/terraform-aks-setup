@@ -59,6 +59,10 @@ pipeline {
                             sed -ie "s|ACCESS_KEY|${key}|g" terraform/load-remote-state.tf
                             sed -ie "s|STORAGE_ACC_NAME|${storage_acc_name}|g" terraform/load-remote-state.tf
                             sed -ie "s|CONTAINER_NAME|${container_name}|g" terraform/load-remote-state.tf
+
+                            sed -ie "s|ACCESS_KEY|${key}|g" terraform/config.tf
+                            sed -ie "s|STORAGE_ACC_NAME|${storage_acc_name}|g" terraform/config.tf
+                            sed -ie "s|CONTAINER_NAME|${container_name}|g" terraform/config.tf
                         '''
                     }
                 }
@@ -71,7 +75,7 @@ pipeline {
                         terraform fmt
                         terraform init
                         terraform plan
-                        terraform apply -auto-approve
+                        
                     '''
                 }
             }

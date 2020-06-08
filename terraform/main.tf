@@ -1,7 +1,7 @@
 module "resource-group" {
-  source       = "./modules/resource-group"
-  rg_name      = var.rg_name
-  location     = var.resource_group_location
+  source   = "./modules/resource-group"
+  rg_name  = var.rg_name
+  location = var.resource_group_location
 }
 
 module "kube" {
