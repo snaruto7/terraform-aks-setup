@@ -51,6 +51,19 @@ pipeline {
                 }
             }
         }
+        stage('Add backend for terraform'){
+            steps{
+                script{
+                    withCredentials([string(credentialsId: 'access-key', variable: 'key'), string(credentialsId: 'storage_acc_name', variable: 'storage_acc_name'), string(credentialsId: 'container_name', variable: 'container_name')]) {
+                        sh '''
+                            sed -ie "s|ACCESS_KEY|${key}|g" terraform/load-remote-state.tf
+                            sed -ie "s|STORAGE_ACC_NAME|${storage_acc_name}|g" terraform/load-remote-state.tf
+                            sed -ie "s|CONTAINER_NAME|${container_name}|g" terraform/load-remote-state.tf
+                        '''
+                    }
+                }
+            }
+        }
         stage('Make tf code pretty'){
             steps{
                 dir('terraform'){
