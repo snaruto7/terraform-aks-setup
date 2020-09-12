@@ -48,6 +48,17 @@ resource "azurerm_key_vault" "example" {
       "restore",
       "managecontacts",
     ]
+
+    storage_permissions = [
+      "get",
+      "list",
+      "recover",
+      "restore",
+      "update",
+      "backup",
+      "delete",
+      "set",
+    ]
   }
 
   network_acls {
