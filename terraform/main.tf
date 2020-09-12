@@ -32,3 +32,9 @@ module "keyvault" {
   tenant_id     = data.azurerm_client_config.current.tenant_id
   object_id     = data.azurerm_client_config.current.object_id
 }
+
+resource "azurerm_key_vault_secret" "example" {
+  name         = "kube-config"
+  value        = module.kube.kube_config_raw
+  key_vault_id = module.keyvault.id
+}
