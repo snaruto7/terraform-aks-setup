@@ -54,3 +54,4 @@ resource "azurerm_key_vault" "example" {
     default_action = "Deny"
     bypass         = "AzureServices"
   }
+}
