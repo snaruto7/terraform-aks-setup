@@ -64,5 +64,6 @@ resource "azurerm_key_vault" "example" {
   network_acls {
     default_action = "Deny"
     bypass         = "AzureServices"
+    virtual_network_subnet_ids = ["/subscriptions/9b72cb19-80e0-4706-8ea1-1c14802e02a4/resourceGroups/self-prac/providers/Microsoft.Network/virtualNetworks/self-prac-vnet"]
   }
 }
