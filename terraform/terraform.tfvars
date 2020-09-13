@@ -14,5 +14,3 @@ node_count   = NODE_COUNT
 k8s_vm       = "VM_SIZE"
 
 reg_name     = "REGISTRY_NAME"
-
-key_vault_name = "KEYVAULT"

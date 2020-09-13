@@ -23,18 +23,3 @@ module "acr" {
   location      = module.resource-group.rg-location
   name          = var.reg_name
 }
-
-module "keyvault" {
-  source        = "./modules/keyvault"
-  rg_name       = module.resource-group.rg_name
-  location      = module.resource-group.rg-location
-  name          = var.key_vault_name
-  tenant_id     = data.azurerm_client_config.current.tenant_id
-  object_id     = data.azurerm_client_config.current.object_id
-}
-
-resource "azurerm_key_vault_secret" "example" {
-  name         = "kube-config"
-  value        = module.kube.kube_config_raw
-  key_vault_id = module.keyvault.id
-}

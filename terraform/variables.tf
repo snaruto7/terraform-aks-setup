@@ -41,8 +41,3 @@ variable reg_name {
   type        = string
   description = "Name of the registry"
 }
-
-variable key_vault_name {
-  type        = string
-  description = "Name of the key-vault"
-}
