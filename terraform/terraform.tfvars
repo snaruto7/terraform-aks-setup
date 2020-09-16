@@ -13,4 +13,3 @@ dns_prefix   = "DNS_PREFIX"
 node_count   = NODE_COUNT
 k8s_vm       = "VM_SIZE"
 
-reg_name     = "REGISTRY_NAME"

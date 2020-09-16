@@ -36,8 +36,3 @@ variable "node_count" {
 variable "k8s_vm" {
   description = "Size of each vm for nodes in cluster"
 }
-
-variable reg_name {
-  type        = string
-  description = "Name of the registry"
-}

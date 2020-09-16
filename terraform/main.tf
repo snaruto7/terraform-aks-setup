@@ -16,10 +16,3 @@ module "kube" {
   client_secret = var.client_secret
   environment   = var.environment
 }
-
-module "acr" {
-  source        = "./modules/acr"
-  rg_name       = module.resource-group.rg_name
-  location      = module.resource-group.rg-location
-  name          = var.reg_name
-}
